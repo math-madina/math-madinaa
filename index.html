@@ -1,0 +1,403 @@
+﻿<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<title>Math Madina</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f2f6fa;
+        display: flex;
+        flex-direction: row;
+    }
+
+    /* Сол жақ меню */
+    .sidebar {
+        width: 240px;
+        background: #1f2d3a;
+        color: white;
+        height: 100vh;
+        padding-top: 20px;
+        position: fixed;
+        left: 0;
+        top: 0;
+        overflow-y: auto;
+    }
+    .sidebar h2 {
+        text-align: center;
+        margin: 0 0 20px 0;
+        font-size: 20px;
+    }
+    .sidebar button {
+        width: 100%;
+        padding: 14px;
+        border: none;
+        background: none;
+        color: white;
+        cursor: pointer;
+        text-align: left;
+        padding-left: 20px;
+        font-size: 16px;
+    }
+    .sidebar button:hover {
+        background: #2e4256;
+    }
+
+    /* Негізгі бет бөлігі */
+    .main {
+        margin-left: 260px;
+        padding: 20px;
+        width: calc(100% - 260px);
+    }
+
+    h1 {
+        color: #233040;
+    }
+
+    /* Контейнерлер */
+    .hidden {
+        display: none;
+    }
+
+    /* Cards */
+    .card {
+        background: white;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,.1);
+    }
+
+    .term-image {
+        width: 100%;
+        max-width: 140px;
+        height: 80px;
+        background: #e5e8ec;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius:6px;
+        margin-top: 8px;
+    }
+
+    /* Сәйкестендіру */
+    .match-box {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+    .match-col {
+        width: 50%;
+    }
+    .match-col button {
+        width: 100%;
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        background: white;
+        cursor:pointer;
+        margin-bottom: 8px;
+    }
+    .match-col button:hover {
+        background: #dfe9ff;
+    }
+
+    /* Тест */
+    .test-option {
+        width: 100%;
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        background: white;
+        cursor: pointer;
+        margin-bottom: 8px;
+        text-align:left;
+    }
+    .test-option:hover {
+        background: #dfe9ff;
+    }
+
+    /* ======== Мобильді үйлесімділік ======== */
+    @media (max-width: 768px) {
+        body {
+            flex-direction: column;
+        }
+        .sidebar {
+            width: 100%;
+            height: auto;
+            position: relative;
+        }
+        .main {
+            margin-left: 0;
+            width: 100%;
+            padding: 10px;
+        }
+        .match-box {
+            flex-direction: column;
+        }
+        .match-col {
+            width: 100%;
+        }
+        .term-image {
+            max-width: 100%;
+            height: auto;
+        }
+    }
+</style>
+
+</head>
+<body>
+
+<!-- СОЛ ЖАҚ МЕНЮ -->
+
+<div class="sidebar">
+    <h2>Math Madina</h2>
+    <button onclick="showSection('dict')">📘 Сөздік</button>
+    <button onclick="showSection('match')">🧩 Сәйкестендіру</button>
+    <button onclick="showSection('test')">📝 Тест</button>
+</div>
+
+<div class="main">
+
+<!-- ===================== СӨЗДІК ===================== -->
+<div id="dict-section">
+
+<h1>📘 Математикалық сөздік</h1>
+
+<div id="dict-list"></div>
+
+<script>
+const dictionary = [
+  { term: "Нүкте", definition: "Геометриядағы ең кіші белгі, өлшемі жоқ.", img:"Сурет 1" },
+  { term: "Түзу", definition: "Шексіз ұзын бір өлшемді сызық.", img:"Сурет 2" },
+  { term: "Кесінді", definition: "Екі нүктемен шектелген түзу бөлігі.", img:"Сурет 3" },
+  { term: "Сәуле", definition: "Бір нүктеден басталып бір бағытта шексіз созылады.", img:"Сурет 4" },
+  { term: "1-лік кесінді", definition: "Ұзындығы 1 бірлікке тең кесінді.", img:"Сурет 5" },
+  { term: "Параллель түзулер", definition: "Бір-бірімен қиылыспайтын түзулер.", img:"Сурет 6" },
+  { term: "Бұрыш", definition: "Екі сәулеге негізделген фигура.", img:"Сурет 7" },
+  { term: "Тік бұрыш", definition: "90°-қа тең бұрыш.", img:"Сурет 8" },
+  { term: "Сүйір бұрыш", definition: "90°-тан кіші бұрыш.", img:"Сурет 9" },
+  { term: "Доғал бұрыш", definition: "90°-тан үлкен, 180°-тан кіші бұрыш.", img:"Сурет 10" },
+  { term: "Үшбұрыш", definition: "3 қабырғасы бар көпбұрыш.", img:"Сурет 11" },
+  { term: "Төртбұрыш", definition: "4 қабырғасы бар жазық фигура.", img:"Сурет 12" },
+  { term: "Тіктөртбұрыш", definition: "Қабырғалары төртбұрыш және бұрыштары 90°.", img:"Сурет 13" },
+  { term: "Квадрат", definition: "Барлық қабырғалары тең тіктөртбұрыш.", img:"Сурет 14" },
+  { term: "Шеңбер", definition: "Бірдей қашықтықтағы нүктелер жиыны.", img:"Сурет 15" },
+  { term: "Радиус", definition: "Шеңбердің центрінен оның нүктесіне дейінгі қашықтық.", img:"Сурет 16" },
+  { term: "Диаметр", definition: "Шеңберді центр арқылы қиып өтетін кесінді.", img:"Сурет 17" },
+  { term: "Жиын", definition: "Объектілердің реттелген немесе реттелмеген тобы.", img:"Сурет 18" },
+  { term: "Функция", definition: "Бір айнымалының басқа айнымалыға тәуелділігі.", img:"Сурет 19" },
+  { term: "Координата", definition: "Нүктенің жазықтықтағы орнын анықтайтын сан.", img:"Сурет 20" }
+];
+
+const dictList = document.getElementById("dict-list");
+dictionary.forEach(item =>{
+  const div = document.createElement("div");
+  div.className = "card";
+  div.innerHTML = `
+      <b>${item.term}</b><br>
+      ${item.definition}
+      <div class="term-image">${item.img}</div>
+  `;
+  dictList.appendChild(div);
+});
+</script>
+
+</div>
+
+<!-- ===================== СӘЙКЕСТЕНДІРУ ===================== -->
+<div id="match-section" class="hidden">
+
+<h1>🧩 Сәйкестендіру</h1>
+
+<div class="match-box">
+    <div class="match-col" id="match-left"></div>
+    <div class="match-col" id="match-right"></div>
+</div>
+
+<script>
+const matches = [
+  { left: "Нүкте", right: "Геометриядағы ең кіші белгі" },
+  { left: "Түзу", right: "Шексіз ұзын бір өлшемді сызық" },
+  { left: "Кесінді", right: "Екі нүктемен шектелген түзу бөлігі" },
+  { left: "Сәуле", right: "Бір нүктеден басталып бір бағытта шексіз созылады" },
+  { left: "1-лік кесінді", right: "Ұзындығы 1 бірлікке тең кесінді" },
+  { left: "Параллель түзулер", right: "Бір-бірімен қиылыспайтын түзулер" },
+  { left: "Бұрыш", right: "Екі сәулеге негізделген фигура" },
+  { left: "Тік бұрыш", right: "90°-қа тең бұрыш" },
+  { left: "Сүйір бұрыш", right: "90°-тан кіші бұрыш" },
+  { left: "Доғал бұрыш", right: "90°-тан үлкен, 180°-тан кіші бұрыш" },
+  { left: "Үшбұрыш", right: "3 қабырғасы бар көпбұрыш" },
+  { left: "Төртбұрыш", right: "4 қабырғасы бар жазық фигура" },
+  { left: "Тіктөртбұрыш", right: "Қабырғалары төртбұрыш және бұрыштары 90°" },
+  { left: "Квадрат", right: "Барлық қабырғалары тең тіктөртбұрыш" },
+  { left: "Шеңбер", right: "Бірдей қашықтықтағы нүктелер жиыны" },
+  { left: "Радиус", right: "Шеңбердің центрінен оның нүктесіне дейінгі қашықтық" },
+  { left: "Диаметр", right: "Шеңберді центр арқылы қиып өтетін кесінді" },
+  { left: "Жиын", right: "Объектілердің реттелген немесе реттелмеген тобы" },
+  { left: "Функция", right: "Бір айнымалының басқа айнымалыға тәуелділігі" },
+  { left: "Координата", right: "Нүктенің жазықтықтағы орнын анықтайтын сан" }
+];
+
+const leftCol = document.getElementById("match-left");
+const rightCol = document.getElementById("match-right");
+
+matches.forEach((item, index) => {
+    const btn = document.createElement("button");
+    btn.textContent = item.left;
+    btn.dataset.index = index;
+    btn.onclick = () => selectMatch(btn, 'left');
+    leftCol.appendChild(btn);
+});
+
+matches.forEach((item, index) => {
+    const btn = document.createElement("button");
+    btn.textContent = item.right;
+    btn.dataset.index = index;
+    btn.onclick = () => selectMatch(btn, 'right');
+    rightCol.appendChild(btn);
+});
+
+let selectedLeft = null;
+let selectedRight = null;
+
+function selectMatch(button, side){
+    if(side === 'left') selectedLeft = button;
+    if(side === 'right') selectedRight = button;
+
+    if(selectedLeft && selectedRight){
+        const leftIndex = selectedLeft.dataset.index;
+        const rightIndex = selectedRight.dataset.index;
+
+        if(leftIndex === rightIndex){
+            selectedLeft.style.background = "#a3f7bf";
+            selectedRight.style.background = "#a3f7bf";
+            selectedLeft.disabled = true;
+            selectedRight.disabled = true;
+        } else {
+            selectedLeft.style.background = "#f7a3a3";
+            selectedRight.style.background = "#f7a3a3";
+            setTimeout(()=>{
+                selectedLeft.style.background = "";
+                selectedRight.style.background = "";
+            },500);
+        }
+        selectedLeft = null;
+        selectedRight = null;
+    }
+}
+</script>
+
+</div>
+
+<!-- ===================== ТЕСТ ===================== -->
+<div id="test-section" class="hidden">
+
+<h1>📝 Тест</h1>
+
+<div id="test-list"></div>
+
+<script>
+const tests = [
+  {
+    question: "Нүкте дегеніміз не?",
+    options: ["Геометриядағы ең кіші белгі", "Шексіз ұзын сызық", "Көпбұрыштың қабырғасы", "Шеңбердің радиусы"],
+    answer: 0
+  },
+  {
+    question: "Түзудің сипаттамасы қандай?",
+    options: ["Екі нүктемен шектелген", "Шексіз ұзын бір өлшемді сызық", "Үшбұрыштың қабырғасы", "Бұрыш"],
+    answer: 1
+  },
+  {
+    question: "Кесінді дегеніміз не?",
+    options: ["Бір нүктеден басталып шексіз созылады", "Екі нүктемен шектелген түзу бөлігі", "Төртбұрыштың қабырғасы", "Шеңбердің центрі"],
+    answer: 1
+  },
+  {
+    question: "Тік бұрыш қанша градусқа тең?",
+    options: ["90°", "45°", "180°", "60°"],
+    answer: 0
+  },
+  {
+    question: "Сүйір бұрыш дегеніміз не?",
+    options: ["90°-тан кіші бұрыш", "90°-қа тең бұрыш", "180°-тан кіші, 90°-тан үлкен бұрыш", "3 қабырғасы бар көпбұрыш"],
+    answer: 0
+  },
+  {
+    question: "Диаметр шеңберді қалай сипаттайды?",
+    options: ["Шеңбердің центрінен нүктеге дейінгі қашықтық", "Центр арқылы шеңберді қиып өтетін кесінді", "Шеңбердің ұзындығы", "Төртбұрыш қабырғасы"],
+    answer: 1
+  },
+  {
+    question: "Квадраттың барлық қабырғалары қандай?",
+    options: ["Тең", "Әр түрлі", "Тек екі қабырға тең", "Шеңбермен қиылысады"],
+    answer: 0
+  },
+  {
+    question: "Функция дегеніміз не?",
+    options: ["Бір айнымалының басқа айнымалыға тәуелділігі", "Шексіз сызық", "Сәуле", "Жиын"],
+    answer: 0
+  },
+  {
+    question: "Параллель түзулер қандай ерекшелікте?",
+    options: ["Қиылысады", "Қиылыспайды", "Бұрыш жасайды", "Төртбұрыш құрайды"],
+    answer: 1
+  },
+  {
+    question: "Жиын дегеніміз не?",
+    options: ["Объектілердің реттелген немесе реттелмеген тобы", "Бір нүкте", "Түзу", "Квадрат"],
+    answer: 0
+  }
+];
+
+const testList = document.getElementById("test-list");
+
+tests.forEach((t, index)=>{
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `<b>${index+1}. ${t.question}</b><br>`;
+    
+    t.options.forEach((opt, i)=>{
+        const btn = document.createElement("button");
+        btn.className = "test-option";
+        btn.textContent = opt;
+        btn.onclick = ()=>{
+            if(i === t.answer){
+                btn.style.background = "#a3f7bf";
+            } else {
+                btn.style.background = "#f7a3a3";
+            }
+            Array.from(div.getElementsByTagName("button")).forEach(b=>b.disabled=true);
+        };
+        div.appendChild(btn);
+    });
+
+    testList.appendChild(div);
+});
+</script>
+
+</div>
+
+<!-- ===================== HTML ЖАБУ ===================== -->
+
+<script>
+function showSection(section){
+    document.getElementById("dict-section").classList.add("hidden");
+    document.getElementById("match-section").classList.add("hidden");
+    document.getElementById("test-section").classList.add("hidden");
+
+    if(section === "dict") document.getElementById("dict-section").classList.remove("hidden");
+    if(section === "match") document.getElementById("match-section").classList.remove("hidden");
+    if(section === "test") document.getElementById("test-section").classList.remove("hidden");
+}
+
+showSection("dict");
+</script>
+
+</div> <!-- main -->
+</body>
+</html>
